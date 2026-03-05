@@ -2,10 +2,15 @@
 
 Organization homepage for `diprobio` on GitHub Pages.
 
+## Data source
+
+- Automatically fetches public repositories from GitHub API: `GET /orgs/diprobio/repos`
+- Uses `data/projects.json` as metadata overrides and manual additions (for planning or non-repo items)
+
 ## What is included
 
 - Organization intro section
-- Project showcase cards driven by `data/projects.json`
+- Project showcase cards
 - Search and tag filter
 - Collaboration section linking contribution guide
 
