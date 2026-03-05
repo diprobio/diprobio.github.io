@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Diprobio organization hub for projects, documents, and collaboration."
+    />
+    <title>Diprobio Organization Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./assets/styles.css" />
+  </head>
+  <body>
+    <div class="bg-glow bg-glow-1" aria-hidden="true"></div>
+    <div class="bg-glow bg-glow-2" aria-hidden="true"></div>
+
+    <header class="hero container">
+      <h1>Diprobio Tech Team</h1>
+      <p class="hero-copy">
+        A central place for organization intro, project showcase, and shared docs. Team members can
+        add projects through pull requests.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="https://github.com/diprobio" target="_blank" rel="noreferrer">Open Organization</a>
+        <a class="btn btn-ghost" href="https://github.com/diprobio/diprobio.github.io" target="_blank" rel="noreferrer">View Website Repo</a>
+      </div>
+      <dl class="stats" id="stats">
+        <div>
+          <dt>Total Projects</dt>
+          <dd id="stat-total">0</dd>
+        </div>
+        <div>
+          <dt>Active</dt>
+          <dd id="stat-active">0</dd>
+        </div>
+        <div>
+          <dt>Maintainers</dt>
+          <dd id="stat-maintainers">0</dd>
+        </div>
+      </dl>
+    </header>
+
+    <main class="container">
+      <section class="panel" id="about">
+        <h2>About Diprobio</h2>
+        <p>
+          Diprobio builds and maintains collaborative projects. This page helps the team discover
+          what exists, what is active, and where documentation lives.
+        </p>
+      </section>
+
+      <section class="panel" id="projects">
+        <div class="panel-head">
+          <h2>Project Showcase</h2>
+          <p>Search by name, description, tag, or maintainer.</p>
+        </div>
+
+        <div class="toolbar">
+          <label class="search-wrap" for="project-search">
+            <span>Search</span>
+            <input id="project-search" type="search" placeholder="Type keyword..." />
+          </label>
+          <div id="tag-filter" class="tags" aria-label="Tag filters"></div>
+        </div>
+
+        <div id="project-list" class="project-grid" aria-live="polite"></div>
+      </section>
+
+      <section class="panel" id="collaboration">
+        <h2>Collaboration Workflow</h2>
+        <ol>
+          <li>Fork or branch from this website repository.</li>
+          <li>Add or update project records in <code>data/projects.json</code>.</li>
+          <li>Open a pull request. Reviewers merge and the page updates automatically.</li>
+        </ol>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="./CONTRIBUTING.md">Contribution Guide</a>
+          <a class="btn btn-ghost" href="https://github.com/diprobio/diprobio.github.io/issues/new" target="_blank" rel="noreferrer">Propose via Issue</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="container footer">
+      <p>
+        Built for <strong>diprobio</strong>. Powered by GitHub Pages.
+      </p>
+    </footer>
+
+    <template id="project-card-template">
+      <article class="project-card">
+        <div class="project-card-top">
+          <p class="project-status"></p>
+          <h3 class="project-title"></h3>
+          <p class="project-description"></p>
+        </div>
+        <dl class="project-meta"></dl>
+        <div class="project-tags"></div>
+        <div class="project-links"></div>
+      </article>
+    </template>
+
+    <script src="./assets/main.js" defer></script>
+  </body>
+</html>
+
+

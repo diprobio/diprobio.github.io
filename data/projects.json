@@ -1,0 +1,39 @@
+{
+  "organization": {
+    "name": "diprobio",
+    "siteTitle": "Diprobio Team Projects",
+    "description": "Collaborative projects and documentation hub."
+  },
+  "projects": [
+    {
+      "name": "BioSignal Toolkit",
+      "description": "Signal processing utilities for multi-modal biological data.",
+      "status": "active",
+      "repo": "https://github.com/diprobio/biosignal-toolkit",
+      "docs": "https://github.com/diprobio/biosignal-toolkit/tree/main/docs",
+      "tags": ["python", "signal", "analysis"],
+      "maintainers": ["alice", "wei"],
+      "lastUpdated": "2026-02-18"
+    },
+    {
+      "name": "Lab Notes Standard",
+      "description": "Template and standards for reproducible experiment records.",
+      "status": "active",
+      "repo": "https://github.com/diprobio/lab-notes-standard",
+      "docs": "https://github.com/diprobio/lab-notes-standard/tree/main/docs",
+      "tags": ["documentation", "workflow"],
+      "maintainers": ["john"],
+      "lastUpdated": "2026-02-03"
+    },
+    {
+      "name": "Dataset Curation Pipeline",
+      "description": "Semi-automated metadata checks and versioning for datasets.",
+      "status": "planning",
+      "repo": "https://github.com/diprobio/dataset-curation-pipeline",
+      "docs": "https://github.com/diprobio/dataset-curation-pipeline/tree/main/docs",
+      "tags": ["data", "quality", "automation"],
+      "maintainers": ["mike", "wei"],
+      "lastUpdated": "2026-01-27"
+    }
+  ]
+}
