@@ -66,7 +66,18 @@
             <span>Search</span>
             <input id="project-search" type="search" placeholder="Type keyword..." />
           </label>
-          <div id="tag-filter" class="tags" aria-label="Tag filters"></div>
+
+          <div class="filter-row">
+            <section class="filter-group" aria-label="Status filters">
+              <p class="filter-label">Status</p>
+              <div id="status-filter" class="tags"></div>
+            </section>
+
+            <section class="filter-group" aria-label="Tag filters">
+              <p class="filter-label">Tags</p>
+              <div id="tag-filter" class="tags"></div>
+            </section>
+          </div>
         </div>
 
         <div id="project-list" class="project-grid" aria-live="polite"></div>
@@ -77,6 +88,7 @@
         <ol>
           <li>Fork or branch from this website repository.</li>
           <li>Add or update project records in <code>data/projects.json</code>.</li>
+          <li>Run <code>npm run validate</code> locally before opening a pull request.</li>
           <li>Open a pull request. Reviewers merge and the page updates automatically.</li>
         </ol>
         <div class="hero-actions">
@@ -87,9 +99,7 @@
     </main>
 
     <footer class="container footer">
-      <p>
-        Built for <strong>diprobio</strong>. Powered by GitHub Pages.
-      </p>
+      <p>Built for <strong>diprobio</strong>. Powered by GitHub Pages.</p>
     </footer>
 
     <template id="project-card-template">
@@ -108,5 +118,3 @@
     <script src="./assets/main.js" defer></script>
   </body>
 </html>
-
-

@@ -68,17 +68,6 @@ body {
   animation: riseIn 0.8s ease-out both;
 }
 
-.eyebrow {
-  display: inline-flex;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 6px 14px;
-  font-family: "IBM Plex Mono", monospace;
-  font-size: 0.82rem;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-}
-
 h1 {
   margin: 14px 0;
   font-size: clamp(2rem, 4vw, 3.5rem);
@@ -205,6 +194,23 @@ input[type="search"] {
 input[type="search"]:focus {
   outline: 2px solid color-mix(in srgb, var(--accent), white 25%);
   border-color: transparent;
+}
+
+.filter-row {
+  display: grid;
+  gap: 14px;
+}
+
+.filter-group {
+  display: grid;
+  gap: 8px;
+}
+
+.filter-label {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .tags {

@@ -1,0 +1,11 @@
+{
+  "name": "diprobio-github-page",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Validation utilities for diprobio.github.io metadata.",
+  "scripts": {
+    "validate:projects": "node scripts/validate-projects.mjs",
+    "validate:links": "node scripts/check-project-links.mjs",
+    "validate": "npm run validate:projects && npm run validate:links"
+  }
+}

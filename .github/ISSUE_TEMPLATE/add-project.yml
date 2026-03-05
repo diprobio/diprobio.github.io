@@ -1,0 +1,65 @@
+name: Add project
+about: Request adding a new project card
+labels: ["project", "metadata"]
+body:
+  - type: input
+    id: project_name
+    attributes:
+      label: Project name
+      placeholder: Example: BioSignal Toolkit
+    validations:
+      required: true
+
+  - type: input
+    id: repo
+    attributes:
+      label: Repository URL
+      description: GitHub repository URL in this organization
+      placeholder: https://github.com/diprobio/example-repo
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      placeholder: One sentence summary
+    validations:
+      required: true
+
+  - type: dropdown
+    id: status
+    attributes:
+      label: Status
+      options:
+        - active
+        - planning
+        - archived
+    validations:
+      required: true
+
+  - type: input
+    id: docs
+    attributes:
+      label: Docs URL (optional)
+      placeholder: https://github.com/diprobio/example-repo/tree/main/docs
+    validations:
+      required: false
+
+  - type: input
+    id: tags
+    attributes:
+      label: Tags
+      description: Comma-separated, e.g. python, analysis, workflow
+      placeholder: tag1, tag2, tag3
+    validations:
+      required: true
+
+  - type: input
+    id: maintainers
+    attributes:
+      label: Maintainers
+      description: Comma-separated GitHub usernames
+      placeholder: alice, bob
+    validations:
+      required: true

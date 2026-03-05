@@ -1,0 +1,48 @@
+name: Update project
+about: Request changing metadata of an existing project
+labels: ["project", "metadata"]
+body:
+  - type: input
+    id: project_name
+    attributes:
+      label: Project name
+      placeholder: Existing project card name
+    validations:
+      required: true
+
+  - type: input
+    id: repo
+    attributes:
+      label: Repository URL or repoName
+      placeholder: https://github.com/diprobio/example-repo OR diprobio/example-repo
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: fields
+    attributes:
+      label: Fields to update
+      options:
+        - label: description
+        - label: status
+        - label: docs
+        - label: tags
+        - label: maintainers
+        - label: lastUpdated
+
+  - type: textarea
+    id: changes
+    attributes:
+      label: Requested changes
+      description: Provide new values clearly
+      placeholder: "status: active\nmaintainers: alice, bob"
+    validations:
+      required: true
+
+  - type: textarea
+    id: reason
+    attributes:
+      label: Why this change is needed
+      placeholder: Brief reason or context
+    validations:
+      required: true

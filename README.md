@@ -7,11 +7,20 @@ Organization homepage for `diprobio` on GitHub Pages.
 - Automatically fetches public repositories from GitHub API: `GET /orgs/diprobio/repos`
 - Uses `data/projects.json` as metadata overrides and manual additions (for planning or non-repo items)
 
+## Collaboration workflow
+
+1. Update `data/projects.json`
+2. Run validation: `npm run validate`
+3. Open PR using `.github/PULL_REQUEST_TEMPLATE.md`
+4. CI workflow `.github/workflows/validate.yml` must pass before merge
+
+Repository ownership rules are defined in `.github/CODEOWNERS`.
+
 ## What is included
 
 - Organization intro section
 - Project showcase cards
-- Search and tag filter
+- Search + status filter + tag filter
 - Collaboration section linking contribution guide
 
 ## Local preview

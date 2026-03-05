@@ -6,7 +6,7 @@ This site is deployed by GitHub Pages from the `main` branch.
 
 - Public repositories are auto-loaded from GitHub API for organization `diprobio`.
 - `data/projects.json` is used to override or enrich repo cards (status, maintainers, docs, tags, etc.).
-- `data/projects.json` can also include manual entries (for planning items not yet created as repos).
+- `data/projects.json` can include manual entries for planning items that do not exist as repositories yet.
 
 ## Add or update project metadata
 
@@ -21,13 +21,20 @@ This site is deployed by GitHub Pages from the `main` branch.
    - `tags` (array)
    - `maintainers` (array of GitHub usernames)
    - `lastUpdated` (format: `YYYY-MM-DD`)
-4. Submit a pull request.
+4. Run `npm run validate`.
+5. Submit a pull request.
 
-## Validate before PR
+## Validation rules
 
-- Confirm JSON is valid (no trailing commas).
-- Confirm links open correctly.
-- Update `lastUpdated` when making meaningful changes.
+- Schema reference: `data/projects.schema.json`
+- Structural/data validation: `scripts/validate-projects.mjs`
+- Link format validation: `scripts/check-project-links.mjs`
+
+## Templates and ownership
+
+- PR template: `.github/PULL_REQUEST_TEMPLATE.md`
+- Issue templates: `.github/ISSUE_TEMPLATE/`
+- Default reviewers: `.github/CODEOWNERS`
 
 ## Suggested branch naming
 

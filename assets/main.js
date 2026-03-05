@@ -1,10 +1,12 @@
 const listNode = document.getElementById("project-list");
 const searchNode = document.getElementById("project-search");
+const statusFilterNode = document.getElementById("status-filter");
 const tagFilterNode = document.getElementById("tag-filter");
 const cardTemplate = document.getElementById("project-card-template");
 
 const PROJECT_DATA_PATH = "./data/projects.json";
 const GITHUB_API_BASE = "https://api.github.com";
+const DEFAULT_STATUSES = ["all", "active", "planning", "archived"];
 
 const statsNodes = {
   total: document.getElementById("stat-total"),
@@ -15,6 +17,7 @@ const statsNodes = {
 const state = {
   projects: [],
   query: "",
+  selectedStatus: "all",
   selectedTag: "all",
 };
 
@@ -33,6 +36,11 @@ function formatDate(value) {
 
 function collectTags(projects) {
   return unique(projects.flatMap((project) => project.tags || [])).sort((a, b) => a.localeCompare(b));
+}
+
+function collectStatuses(projects) {
+  const statuses = unique(projects.map((project) => String(project.status || "").toLowerCase()).filter(Boolean));
+  return unique([...DEFAULT_STATUSES, ...statuses]);
 }
 
 function parseGithubFullNameFromUrl(url) {
@@ -66,47 +74,61 @@ function toIsoDateOrNow(value) {
   return parsed.toISOString();
 }
 
-function createTagFilters(tags) {
-  tagFilterNode.textContent = "";
-  const entries = ["all", ...tags];
+function createFilterButtons(containerNode, entries, selectedValue, onSelect) {
+  containerNode.textContent = "";
 
-  entries.forEach((tag) => {
+  entries.forEach((entry) => {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "tag-btn";
-    button.textContent = tag;
-    button.setAttribute("aria-pressed", String(tag === state.selectedTag));
+    button.textContent = entry;
+    button.setAttribute("aria-pressed", String(entry === selectedValue));
     button.addEventListener("click", () => {
-      state.selectedTag = tag;
-      [...tagFilterNode.querySelectorAll("button")].forEach((node) => {
-        node.setAttribute("aria-pressed", String(node.textContent === tag));
+      [...containerNode.querySelectorAll("button")].forEach((node) => {
+        node.setAttribute("aria-pressed", String(node.textContent === entry));
       });
-      render();
+      onSelect(entry);
     });
-    tagFilterNode.appendChild(button);
+    containerNode.appendChild(button);
   });
 }
 
-function projectMatches(project, query, tag) {
+function createStatusFilters(statuses) {
+  createFilterButtons(statusFilterNode, statuses, state.selectedStatus, (status) => {
+    state.selectedStatus = status;
+    render();
+  });
+}
+
+function createTagFilters(tags) {
+  createFilterButtons(tagFilterNode, ["all", ...tags], state.selectedTag, (tag) => {
+    state.selectedTag = tag;
+    render();
+  });
+}
+
+function projectMatches(project, query, status, tag) {
+  const normalizedStatus = String(project.status || "").toLowerCase();
   const haystack = [
     project.name,
     project.description,
     project.maintainers?.join(" "),
     project.tags?.join(" "),
-    project.status,
+    normalizedStatus,
   ]
     .filter(Boolean)
     .join(" ")
     .toLowerCase();
 
   const queryMatch = !query || haystack.includes(query.toLowerCase());
+  const statusMatch = status === "all" || normalizedStatus === status;
   const tagMatch = tag === "all" || project.tags?.includes(tag);
 
-  return queryMatch && tagMatch;
+  return queryMatch && statusMatch && tagMatch;
 }
 
 function renderStats(projects) {
-  const active = projects.filter((project) => (project.status || "").toLowerCase() === "active").length;
+  const active = projects.filter((project) => String(project.status || "").toLowerCase() === "active").length;
   const maintainers = unique(projects.flatMap((project) => project.maintainers || [])).length;
 
   statsNodes.total.textContent = String(projects.length);
@@ -124,7 +146,7 @@ function createCard(project) {
   const tagsNode = fragment.querySelector(".project-tags");
   const linksNode = fragment.querySelector(".project-links");
 
-  statusNode.textContent = project.status || "Unknown";
+  statusNode.textContent = project.status || "unknown";
   titleNode.textContent = project.name;
   descriptionNode.textContent = project.description || "No description yet.";
 
@@ -169,7 +191,7 @@ function createCard(project) {
 
 function render() {
   const visibleProjects = state.projects
-    .filter((project) => projectMatches(project, state.query, state.selectedTag))
+    .filter((project) => projectMatches(project, state.query, state.selectedStatus, state.selectedTag))
     .sort((a, b) => new Date(b.lastUpdated) - new Date(a.lastUpdated));
 
   listNode.textContent = "";
@@ -226,10 +248,12 @@ async function fetchOrgRepos(orgName) {
 }
 
 function mapApiRepoToProject(repo) {
-  const tags = unique([
-    ...(Array.isArray(repo.topics) ? repo.topics : []),
-    repo.language ? String(repo.language).toLowerCase() : null,
-  ].filter(Boolean));
+  const tags = unique(
+    [
+      ...(Array.isArray(repo.topics) ? repo.topics : []),
+      repo.language ? String(repo.language).toLowerCase() : null,
+    ].filter(Boolean)
+  );
 
   return {
     name: repo.name,
@@ -252,19 +276,31 @@ function normalizeOverrideProject(project, orgName) {
       : `${orgName}/${project.repoName}`.toLowerCase()
     : null;
   const repoKey = repoKeyFromUrl || repoKeyFromName;
-  const repoUrl = project.repo || (repoKey ? `https://github.com/${repoKey}` : "");
 
   return {
-    ...project,
-    name: project.name || (repoKey ? repoKey.split("/")[1] : "Unnamed Project"),
-    description: project.description || "No description yet.",
-    status: project.status || "planning",
-    repo: repoUrl,
-    docs: project.docs || "",
+    name: project.name || null,
+    description: project.description || null,
+    status: project.status ? String(project.status).toLowerCase() : null,
+    repo: project.repo || (repoKey ? `https://github.com/${repoKey}` : null),
+    docs: project.docs || null,
     tags: Array.isArray(project.tags) ? project.tags : [],
     maintainers: Array.isArray(project.maintainers) ? project.maintainers : [],
-    lastUpdated: toIsoDateOrNow(project.lastUpdated),
+    lastUpdated: project.lastUpdated ? toIsoDateOrNow(project.lastUpdated) : null,
     _repoKey: repoKey,
+  };
+}
+
+function materializeManualProject(project) {
+  return {
+    name: project.name || (project._repoKey ? project._repoKey.split("/")[1] : "Unnamed Project"),
+    description: project.description || "No description yet.",
+    status: project.status || "planning",
+    repo: project.repo || "",
+    docs: project.docs || "",
+    tags: project.tags,
+    maintainers: project.maintainers,
+    lastUpdated: project.lastUpdated || toIsoDateOrNow(new Date()),
+    _repoKey: project._repoKey,
   };
 }
 
@@ -292,17 +328,21 @@ function mergeProjects(apiRepos, overrideProjects, orgName) {
 
     return {
       ...base,
-      ...override,
-      tags: override.tags.length > 0 ? override.tags : base.tags,
-      maintainers: override.maintainers,
+      name: override.name || base.name,
+      description: override.description || base.description,
+      status: override.status || base.status,
+      repo: override.repo || base.repo,
       docs: override.docs || base.docs,
+      tags: override.tags.length > 0 ? override.tags : base.tags,
+      maintainers: override.maintainers.length > 0 ? override.maintainers : base.maintainers,
+      lastUpdated: override.lastUpdated || base.lastUpdated,
       _repoKey: base._repoKey,
     };
   });
 
-  const extraManualProjects = normalizedOverrides.filter(
-    (project) => !project._repoKey || !usedOverrideKeys.has(project._repoKey)
-  );
+  const extraManualProjects = normalizedOverrides
+    .filter((project) => !project._repoKey || !usedOverrideKeys.has(project._repoKey))
+    .map((project) => materializeManualProject(project));
 
   return [...mergedFromApi, ...extraManualProjects];
 }
@@ -320,12 +360,15 @@ async function bootstrap() {
       resolvedProjects = mergeProjects(apiRepos, overrideProjects, orgName);
     } catch (apiError) {
       console.warn("GitHub API unavailable, fallback to local project data.", apiError);
-      resolvedProjects = overrideProjects.map((project) => normalizeOverrideProject(project, orgName));
+      resolvedProjects = overrideProjects
+        .map((project) => normalizeOverrideProject(project, orgName))
+        .map((project) => materializeManualProject(project));
     }
 
     state.projects = resolvedProjects;
 
     renderStats(state.projects);
+    createStatusFilters(collectStatuses(state.projects));
     createTagFilters(collectTags(state.projects));
 
     searchNode.addEventListener("input", (event) => {
@@ -345,4 +388,3 @@ async function bootstrap() {
 }
 
 bootstrap();
-
